@@ -1,4 +1,4 @@
-<h1 align="center">Hi there, I'm <a href="https://vk.com/zarter_dud" target="_blank">Andrey</a>
+<h1 align="center">Hi there, I'm <a href="https://vk.com/zarter_dud" target="_blank">Andrey</a> and a <a href="https://vk.com/lmndk" target="_blank">Dmitrii</a>
 <img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
 <h3 align="center">School student from Russia, who take classes at YandexLyceum</h3>
 
