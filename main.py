@@ -7,11 +7,7 @@ app = Flask(__name__)
 def parse_content(url):
     data = {
         "title": "",
-        "texts": [],
-        "links": {
-            "internal": [],
-            "external": []
-        }
+        "content": []
     }
 
     try:
@@ -22,18 +18,10 @@ def parse_content(url):
             # Извлечение заголовка
             data["title"] = soup.title.string if soup.title else ""
 
-            # Извлечение текстов
+            # Извлечение контента
             for tag in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']):
-                data["texts"].append(tag.text.strip())
-
-            # Извлечение ссылок
-            domain = request.url_root
-            for link in soup.find_all('a', href=True):
-                href = link['href']
-                if href.startswith('/') or (domain and href.startswith(domain)):
-                    data["links"]["internal"].append((link.text.strip(), href))
-                else:
-                    data["links"]["external"].append((link.text.strip(), href))
+                content = {"tag": tag.name, "text": tag.text.strip()}
+                data["content"].append(content)
 
     except requests.RequestException as e:
         print(f"Error during requests to {url}: {str(e)}")

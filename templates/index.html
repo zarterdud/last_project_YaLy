@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Parser</title>
+    <title>Structured Content Parser</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Парсер контента на Flask</h1>
+        <h1 class="mt-5">Парсер структурированного контента</h1>
         <form method="post" class="mb-3">
             <input type="text" name="url" class="form-control" placeholder="Введите URL сайта" value="{{ url }}">
             <button type="submit" class="btn btn-primary mt-2">Парсить</button>
@@ -16,32 +17,19 @@
         {% if data %}
         <h2>Заголовок страницы:</h2>
         <h3>{{ data.title }}</h3>
-        <div>
-            <h3>Тексты:</h3>
-            <ul>
-                {% for text in data.texts %}
-                <li>{{ text }}</li>
-                {% endfor %}
-            </ul>
+        <div id="content-area">
+            <h3>Контент:</h3>
+            {% for item in data.content %}
+            <div class="content-block">
+                <{{ item.tag }}>{{ item.text }}</{{ item.tag }}>
+            </div>
+            {% endfor %}
         </div>
-        <div>
-            <h3>Ссылки:</h3>
-            <h4>Внутренние:</h4>
-            <ul>
-                {% for internal_link in data.links.internal %}
-                <li><a href="{{ internal_link[1] }}">{{ internal_link[0] }}</a></li>
-                {% endfor %}
-            </ul>
-            <h4>Внешние:</h4>
-            <ul>
-                {% for external_link in data.links.external %}
-                <li><a href="{{ external_link[1] }}">{{ external_link[0] }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
+        <button id="next-button" class="btn btn-secondary mt-2">Далее</button>
         {% elif error %}
         <p class="text-danger">{{ error }}</p>
         {% endif %}
     </div>
+    <script src="static/script.js"></script>
 </body>
 </html>
