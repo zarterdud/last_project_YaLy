@@ -10,8 +10,14 @@ back_to_menu_keyboard = InlineKeyboardMarkup(
 
 auth_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton("Паролем", callback_data="auth_with_passw")],
-        [InlineKeyboardButton("Имя + пароль", callback_data="auth_with_name_passw")],
-        [InlineKeyboardButton("Username + пароль")]
+        [InlineKeyboardButton("Ввести пароль", callback_data="auth_with_passw")],
+        [InlineKeyboardButton("Отменить операцию", callback_data="menu")],
+    ]
+)
+
+
+cancel_operation = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton("Отменить операцию", callback_data="menu")],
     ]
 )

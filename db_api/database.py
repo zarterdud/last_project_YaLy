@@ -12,24 +12,28 @@ class DataBase:
                 tg_id INTEGER,
                 fullname TEXT,
                 username TEXT,
-                password TEXT
+                password TEXT,
+                is_auth BOOL
             )
             """
         )
         self.con.commit()
 
-    def register_user(self, tg_id, fullname, username):
+    def register_user(self, tg_id, fullname, username, password):
         self.cur.execute(
-            f"INSERT INTO users (tg_id, fullname, username) VALUES ('{tg_id}', '{fullname}', '{username}')"
+            f"INSERT INTO users (tg_id, fullname, username, password, is_auth) VALUES ('{tg_id}', '{fullname}', '{username}', '{password}', 'True')"
         )
         self.con.commit()
 
+    def take_users(self):
+        return self.cur.execute(f"SELECT tg_id, password, is_auth FROM users").fetchall()
+
     def authorize_user(self, tg_id, password):
-        users = self.cur.execute(f"SELECT tg_id, password FROM users").fetchall()[0]
-        for user_content in users:
-            user_telegramm_id = user_content[0]
+        users = self.cur.execute(f"SELECT tg_id, password FROM users").fetchall()
+        for user_id, passw in users:
+            user_telegramm_id = user_id
             if user_telegramm_id == tg_id:
-                user_password = user_content[1]
+                user_password = passw
                 if user_password == password:
                     return True
         return False

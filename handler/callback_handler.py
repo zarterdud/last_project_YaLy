@@ -1,8 +1,10 @@
 from config import get_bot_and_db
-from keyboard.static import back_to_menu_keyboard
-from keyboard.dynamic import start_kb
+from keyboard.static import (
+    auth_keyboard,
+    cancel_operation,
+)
+from keyboard.dynamic import start_keyboard
 from datetime import datetime
-from db_api.database import DataBase
 
 
 async def callback_handler(update, context):
@@ -10,19 +12,38 @@ async def callback_handler(update, context):
     bot, db = get_bot_and_db()
     user = update.effective_user
     tg_id = user.id
+    chat_id = update.effective_chat.id
     callback_data = update.callback_query.data
     if callback_data == "menu":
-        await update.effective_message.edit_text(f"Меню", reply_markup=start_kb)
-    elif callback_data == "reg":
-        full_name = f"{user.first_name} {user.last_name}"
-        username = user.username
-        db.register_user(tg_id, full_name, username)
-        current_data = f"{data.day}:{data.month:02}:{data.year}"
         await update.effective_message.edit_text(
-            f"Вы были успешно зарегистрированны!\nДата: {current_data}",
-            reply_markup=back_to_menu_keyboard,
+            f"Меню", reply_markup=start_keyboard(tg_id)
         )
+    elif callback_data == "menu2":
+        await update.effective_message.edit_text(
+            f"Меню", reply_markup=start_keyboard(tg_id)
+        )
+
+    elif callback_data == "reg":
+        await update.effective_message.edit_text(
+            f"Введите пароль для конечной регистрации!",
+        )
+
     elif callback_data == "auth":
-        await update.effective_message.edit_text(f"Выберите тип авторизации", reply_markup=None)
+        await update.effective_message.edit_text(
+            f"Выберите тип авторизации", reply_markup=auth_keyboard
+        )
+
+    elif callback_data == "auth_with_passw":
+        await update.effective_message.edit_text(
+            text=f"Отправьте пароль",
+            reply_markup=cancel_operation,
+        )
+
+    elif callback_data == "auth_with_name_passw":
+        await update.effective_message.edit_text(
+            text=f"Отправьте имя пользователя",
+            reply_markup=cancel_operation,
+        )
+
     elif callback_data == "parser":
         pass

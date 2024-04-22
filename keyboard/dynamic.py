@@ -1,10 +1,31 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from config import get_bot_and_db
 
 
-start_kb = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton("Зарегистрироваться", callback_data="reg")],
-        [InlineKeyboardButton("Авторизироваться", callback_data="auth")],
-        [InlineKeyboardButton("Меню", callback_data="menu")],
-    ]
-)
+bot, db = get_bot_and_db()
+
+
+def start_keyboard(tg_id):
+    for user in db.take_users():
+        if tg_id == user[0]:
+            if user[-1]:
+                start_kb = InlineKeyboardMarkup(
+                    inline_keyboard=[
+                        [InlineKeyboardButton("Парсер", callback_data="parser")],
+                    ]
+                )
+                return start_kb
+            start_kb = InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [InlineKeyboardButton("Авторизироваться", callback_data="auth")],
+                    [InlineKeyboardButton("Парсер", callback_data="parser")],
+                ]
+            )
+            return start_kb
+    start_kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton("Зарегистрироваться", callback_data="reg")],
+            [InlineKeyboardButton("Парсер", callback_data="parser")],
+        ]
+    )
+    return start_kb
