@@ -9,5 +9,9 @@ back_to_menu_keyboard = InlineKeyboardMarkup(
 
 
 auth_keyboard = InlineKeyboardMarkup(
-    inline_keyboard=[[InlineKeyboardButton("", callback_data="")]]
+    inline_keyboard=[
+        [InlineKeyboardButton("Паролем", callback_data="auth_with_passw")],
+        [InlineKeyboardButton("Имя + пароль", callback_data="auth_with_name_passw")],
+        [InlineKeyboardButton("Username + пароль")]
+    ]
 )
