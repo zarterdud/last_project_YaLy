@@ -1,16 +1,16 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request  # Импорт необходимых модулей
 import requests
 from bs4 import BeautifulSoup
 
-app = Flask(__name__)
+app = Flask(__name__)  # Создание экземпляра приложения Flask
 
 def parse_content(url):
-    data = {
+    data = {  # Создание словаря для хранения данных
         "title": "",
         "content": []
     }
 
-    try:
+    try:  # Обработка исключений для запросов
         response = requests.get(url)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -23,21 +23,21 @@ def parse_content(url):
                 content = {"tag": tag.name, "text": tag.text.strip()}
                 data["content"].append(content)
 
-    except requests.RequestException as e:
+    except requests.RequestException as e:  # Обработка ошибок запросов
         print(f"Error during requests to {url}: {str(e)}")
 
     return data
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])  # Маршрут для главной страницы
 def home():
-    if request.method == 'POST':
-        url = request.form['url']
-        if url:
-            parsed_data = parse_content(url)
-            return render_template('index.html', data=parsed_data, url=url)
+    if request.method == 'POST':  # Проверка метода запроса
+        url = request.form['url']  # Получение URL из формы
+        if url:  # Проверка наличия URL
+            parsed_data = parse_content(url)  # Парсинг контента
+            return render_template('index.html', data=parsed_data, url=url)  # Возврат шаблона с данными
         else:
-            return render_template('index.html', error="Введите URL.", url="")
-    return render_template('index.html', url="")
+            return render_template('index.html', error="Введите URL.", url="")  # Возврат шаблона с ошибкой
+    return render_template('index.html', url="")  # Возврат пустого шаблона
 
 if __name__ == '__main__':
     app.run(debug=True)
