@@ -1,4 +1,4 @@
-from main import MyBot
+from tg_bot_main import MyBot
 from db_api.database import DataBase
 from config import TOKEN, db_name
 from telegram.ext import ApplicationBuilder
