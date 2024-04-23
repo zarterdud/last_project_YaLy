@@ -31,6 +31,10 @@ class MyBot:
         user = update.effective_user
         tg_id = user.id
         full_name = f"{user.first_name} {user.last_name}"
+        for tg_id_user in self.db.take_users():
+            if tg_id == tg_id_user[0]:
+                self.db.is_auth_to_False(tg_id)
+                break
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=f"Приветствую, {full_name}, в боте!\nВыберите опцию!",
@@ -46,25 +50,26 @@ class MyBot:
 
     async def handler_request(self, update, context):
         request = update.message.text
+        tg_id = update.effective_user.id
         if request.startswith("https://"):
             ans = take_ans_request(request)
             if ans:
                 await context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=f"{ans}",
-                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+                    reply_markup="",
                 )
             else:
                 await context.bot.send_message(
                     chat_id=update.effective_chat.id,
                     text=f"Нет\n{ans}",
-                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+                    reply_markup="",
                 )
         else:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Введите корректный url адрес!",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+                reply_markup=start_keyboard(tg_id),
             )
         return ConversationHandler.END
 
@@ -98,6 +103,7 @@ class MyBot:
         password = update.message.text
         tg_id = update.effective_user.id
         in_db = self.db.authorize_user(tg_id=tg_id, password=password)
+        self.db.is_auth_to_True(tg_id)
         if in_db:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
@@ -107,7 +113,7 @@ class MyBot:
         else:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f"Ошибка, вы не найдены в системе",
+                text=f"Ошибка",
                 reply_markup=back_to_menu_keyboard,
             )
         return ConversationHandler.END

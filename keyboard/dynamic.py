@@ -8,7 +8,7 @@ bot, db = get_bot_and_db()
 def start_keyboard(tg_id):
     for user in db.take_users():
         if tg_id == user[0]:
-            if user[-1]:
+            if user[-1] == "True":
                 return InlineKeyboardMarkup(
                     inline_keyboard=[
                         [InlineKeyboardButton("Парсер", callback_data="parser")],

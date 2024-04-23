@@ -37,3 +37,11 @@ class DataBase:
                 if user_password == password:
                     return True
         return False
+
+    def is_auth_to_False(self, tg_id):
+        self.cur.execute(f"UPDATE users SET is_auth = 'False' WHERE tg_id = '{tg_id}'")
+        self.con.commit()
+
+    def is_auth_to_True(self, tg_id):
+        self.cur.execute(f"UPDATE users SET is_auth = 'True' WHERE tg_id = '{tg_id}'")
+        self.con.commit()
