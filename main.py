@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request  # Импорт необходимых модулей
+from flask import Flask, abort, jsonify, render_template, request  # Импорт необходимых модулей
 import requests
 from bs4 import BeautifulSoup
 
@@ -41,6 +41,16 @@ def home():
                 "index.html", error="Введите URL.", url=""
             )  # Возврат шаблона с ошибкой
     return render_template("index.html", url="")  # Возврат пустого шаблона
+
+
+@app.route('/api', methods=['GET'])
+def api():
+    url = request.json.get('url', None)
+    if url:
+        parsed_data = parse_content(url)
+        print(type(parsed_data), parsed_data)
+        return jsonify(parsed_data)
+    abort(400)
 
 
 if __name__ == "__main__":
