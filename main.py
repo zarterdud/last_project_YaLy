@@ -8,6 +8,8 @@ from telegram.ext import (
     ConversationHandler,
     filters,
 )
+from telegram import InlineKeyboardMarkup
+from web import find_request
 from keyboard.static import back_to_menu_keyboard, cancel_operation
 from db_api.database import DataBase
 from handler.callback_handler import callback_handler
@@ -23,6 +25,7 @@ class MyBot:
         self.db = database
         self.password_state = 1
         self.reg_state = 1
+        self.add_web_page = 1
 
     async def start(self, update, context):
         user = update.effective_user
@@ -33,6 +36,29 @@ class MyBot:
             text=f"Приветствую, {full_name}, в боте!\nВыберите опцию!",
             reply_markup=start_keyboard(tg_id),
         )
+
+    async def write_name_web_page(self, update, context):
+        await update.effective_message.edit_text(
+            text="Напишите название web-страницы!",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+        )
+        return self.add_web_page
+
+    async def handler_request(self, update, context):
+        request = update.message.text
+        if request.startswith("https//:"):
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Вот что мы для вас нашли: ничего хихихиха",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+            )
+        else:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Введите корректный url адрес!",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+            )
+        return ConversationHandler.END
 
     async def write_password_register(self, update, context):
         await update.effective_message.edit_text(
@@ -79,10 +105,31 @@ class MyBot:
         return ConversationHandler.END
 
     async def cancel(self, update, context) -> int:
-        await update.message.reply_text("Отменено.", reply_markup=back_to_menu_keyboard)
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Вернуться",
+            reply_markup=back_to_menu_keyboard,
+        )
         return ConversationHandler.END
 
     def register_handlers(self):
+        self.application.add_handler(
+            ConversationHandler(
+                entry_points=[
+                    CallbackQueryHandler(
+                        callback=self.write_name_web_page, pattern="parser"
+                    )
+                ],
+                states={
+                    self.add_web_page: [
+                        MessageHandler(
+                            filters.TEXT & ~filters.COMMAND, self.handler_request
+                        ),
+                    ],
+                },
+                fallbacks=[CommandHandler("cancel", self.cancel)],
+            )
+        )
         self.application.add_handler(
             ConversationHandler(
                 entry_points=[
@@ -97,7 +144,7 @@ class MyBot:
                         ),
                     ],
                 },
-                fallbacks=[CallbackQueryHandler(self.cancel, pattern="menu")],
+                fallbacks=[CommandHandler("cancel", self.cancel)],
             )
         )
         self.application.add_handler(
@@ -114,7 +161,7 @@ class MyBot:
                         ),
                     ],
                 },
-                fallbacks=[CallbackQueryHandler(self.cancel, pattern="menu")],
+                fallbacks=[CommandHandler("cancel", self.cancel)],
             )
         )
         self.application.add_handler(CommandHandler("start", self.start))
