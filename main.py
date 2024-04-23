@@ -9,7 +9,7 @@ from telegram.ext import (
     filters,
 )
 from telegram import InlineKeyboardMarkup
-from web import find_request
+from web.find_request import take_ans_request
 from keyboard.static import back_to_menu_keyboard, cancel_operation
 from db_api.database import DataBase
 from handler.callback_handler import callback_handler
@@ -46,12 +46,20 @@ class MyBot:
 
     async def handler_request(self, update, context):
         request = update.message.text
-        if request.startswith("https//:"):
-            await context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="Вот что мы для вас нашли: ничего хихихиха",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
-            )
+        if request.startswith("https://"):
+            ans = take_ans_request(request)
+            if ans:
+                await context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=f"{ans}",
+                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+                )
+            else:
+                await context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text=f"Нет\n{ans}",
+                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[]),
+                )
         else:
             await context.bot.send_message(
                 chat_id=update.effective_chat.id,
