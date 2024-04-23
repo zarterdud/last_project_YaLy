@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structured Content Parser</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Парсер структурированного контента</h1>
+        <form method="post" class="mb-3">
+            <input type="text" name="url" class="form-control" placeholder="Введите URL сайта" value="{{ url }}">
+            <button type="submit" class="btn btn-primary mt-2">Парсить</button>
+        </form>
+        {% if data %}
+        <h2>Заголовок страницы:</h2>
+        <h3>{{ data.title }}</h3>
+        <div id="content-area">
+            <h3>Контент:</h3>
+            {% for item in data.content %}
+            <div class="content-block">
+                <{{ item.tag }}>{{ item.text }}</{{ item.tag }}>
+            </div>
+            {% endfor %}
+        </div>
+        <button id="next-button" class="btn btn-secondary mt-2">Далее</button>
+        {% elif error %}
+        <p class="text-danger">{{ error }}</p>
+        {% endif %}
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>

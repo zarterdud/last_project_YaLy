@@ -1,0 +1,7 @@
+.content-block {
+    display: none;
+}
+
+#content-area {
+    margin-top: 20px; /* Добавляет пространство под кнопкой */
+}
