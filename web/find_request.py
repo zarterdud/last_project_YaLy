@@ -1,6 +1,7 @@
 import requests
-from bs4 import BeautifulSoup
+from json import loads
 
 
-session = requests.Session()
-link = "http://127.0.0.1:5000/"
+
+def take_ans_request(url):
+    response = requests.get('http://127.0.0.1:5000/api', url=url)
