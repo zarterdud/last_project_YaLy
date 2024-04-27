@@ -23,8 +23,9 @@ pip install -r requirements.txt
 
 3. Run the app
 
-<strong>follow the link or run in IDLE:</strong>
+<strong>Follow the link or run in IDLE: </strong>
 http://lung-cancer-ai-gpt35.ru/
+<div><strong>Search in telegramm username for bot:</strong> @LastYearYandexLyceumBot</div>
 
 ```python
 tap on the exe file 2 times
